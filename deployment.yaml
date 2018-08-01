@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: acme-dns-service
+  name: acme-dns-service
+  namespace: kube-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: acme-dns-service
+      name: acme-dns-service
+    spec:
+      serviceAccountName: acme-dns-service
+      containers:
+        - name: acme-dns-service
+          image: liquidweb/acme-dns-service:master
+          imagePullPolicy: Always
+          args:
+          # insert args here
+          volumeMounts:
+            - name:  acme-dns-service-vol
+              mountPath: /var/lib/acme-dns
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: acme-dns-service-vol
+          persistentVolumeClaim:
+            claimName: acme-dns-service-vol
+
